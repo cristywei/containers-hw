@@ -59,10 +59,12 @@ class Fib:
     >>> list(Fib(5))
     [1, 1, 2, 3, 5]
     '''
-    def __init__(self, n=''):
+    def __init__(self, n=None):
         self.n = n
 
-    def __repr__(self):
+    def __repr__(self, n=None):
+        if self.n is None:
+            return 'Fib()'
         return 'Fib(' + str(self.n) + ')'
 
     def __iter__(self):
@@ -106,10 +108,19 @@ def fib_yield(n=None):
     f1 = 1
     if n == 1:
         yield 1
-    for i in range(n - 1):
-        if i < 1:
+    if n is None:
+        if f0 == 0:
             yield 1
-        f2 = f0 + f1
-        f0 = f1
-        f1 = f2
-        yield f2
+        while f0 != 0:
+            f2 = f0 + f1
+            f0 = f1
+            f1 = f2
+            yield f2
+    else:
+        for i in range(n - 1):
+            if i < 1:
+                yield 1
+            f2 = f0 + f1
+            f0 = f1
+            f1 = f2
+            yield f2
