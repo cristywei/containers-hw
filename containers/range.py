@@ -38,12 +38,12 @@ def range(a, b=None, c=None):
     '''
     add = 1
 
-    if b == None and c == None:
+    if b is None and c is None:
         if a < 0:
             return None
         begin = 0
         end = a
-    elif c == None:
+    elif c is None:
         if a > b:
             return None
         begin = a
@@ -66,7 +66,7 @@ def range(a, b=None, c=None):
             while current <= (end - add - 1):
                 current += add
                 yield current
-    
+
     if end < begin and add > 0:
         current = end
         yield current
