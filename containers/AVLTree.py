@@ -12,7 +12,8 @@ class AVLTree(BST):
     '''
     FIXME:
     AVLTree is currently not a subclass of BST.
-    You should make the necessary changes in the class declaration line above
+    You should make the necessary changes in the class
+    declaration line above
     and in the constructor below.
     '''
 
@@ -58,17 +59,17 @@ class AVLTree(BST):
         if node is None:
             return True
         if AVLTree._balance_factor(node) not in [-1, 0, 1]:
-            ret = False
+            return False
         if node.left:
             if AVLTree._balance_factor(node.left) in [-1, 0, 1]:
                 ret &= AVLTree._is_avl_satisfied(node.left)
             else:
-                ret = False
+                return False
         if node.right:
             if AVLTree._balance_factor(node.right) in [-1, 0, 1]:
-                ret &= AVLTree._is_avl_satisfied(node.right)
+                ret &= AVLTree._is_avl_satisfied(node.left)
             else:
-                ret = False
+                return False
         return ret
 
     @staticmethod
@@ -86,16 +87,15 @@ class AVLTree(BST):
         if node is None or node.right is None:
             return
 
-        newNode = Node(node.right.value)
-        newNode.right = node.right.right
-
+        newnode = Node(node.right.value)
+        newnode.right = node.right.right
         nodeleft = Node(node.value)
         nodeleft.left = node.left
         nodeleft.right = node.right.left
 
-        newNode.left = nodeleft
+        newnode.left = nodeleft
 
-        return newNode
+        return newnode
 
     @staticmethod
     def _right_rotate(node):
@@ -112,16 +112,15 @@ class AVLTree(BST):
         if node is None or node.left is None:
             return
 
-        newNode = Node(node.left.value)
-        newNode.left = node.left.left
-
+        newnode = Node(node.left.value)
+        newnode.left = node.left.left
         noderight = Node(node.value)
         noderight.right = node.right
         noderight.left = node.left.right
 
-        newNode.right = noderight
+        newnode.right = noderight
 
-        return newNode
+        return newnode
 
     def insert(self, value):
         '''
@@ -164,7 +163,8 @@ class AVLTree(BST):
                 return AVLTree._insert(value, node.right)
             else:
                 node.right = Node(value)
-        return
+        else:
+            return
 
     def rebalance(self, node):
         '''
@@ -173,7 +173,7 @@ class AVLTree(BST):
         '''
         if node is None:
             return
-        if AVLTree._balance_factor(node) in [-1, 0, 1]:
+        if AVLTree._balance_factor(node) not in [-1, 0, 1]:
             node = self._rebalance(node)
         else:
             node.right = self.rebalance(node.right)
@@ -188,16 +188,18 @@ class AVLTree(BST):
         But both the insert function needs the rebalancing code,
         so I recommend including that code here.
         '''
-        balanceFactor = AVLTree._balance_factor(node)
-        if balanceFactor < 0:
+        if node is None:
+            return
+        bf = AVLTree._balance_factor(node)
+        if bf < 0:
             if AVLTree._balance_factor(node.right) > 0:
                 node.right = AVLTree._right_rotate(node.right)
                 node = AVLTree._left_rotate(node)
             else:
                 node = AVLTree._left_rotate(node)
-        elif balanceFactor > 0:
+        elif bf > 0:
             if AVLTree._balance_factor(node.left) < 0:
-                node.left = AVLTree._left_rotate(node.right)
+                node.left = AVLTree._left_rotate(node.left)
                 node = AVLTree._right_rotate(node)
             else:
                 node = AVLTree._right_rotate(node)
