@@ -7,4 +7,4 @@ Build status:
 1. [![](https://github.com/cristywei/containers-hw/workflows/tests-BinaryTree/badge.svg)](https://github.com/cristywei/containers-hw/actions?query=workflow%3Atests-BinaryTree)
 1. [![](https://github.com/cristywei/containers-hw/workflows/tests-BST/badge.svg)](https://github.com/cristywei/containers-hw/actions?query=workflow%3Atests-BST)
 1. [![](https://github.com/cristywei/containers-hw/workflows/tests-AVLTree/badge.svg)](https://github.com/cristywei/containers-hw/actions?query=workflow%3Atests-AVLTree)
-1. [![](https://github.com/cristywei/containers-hw/workflows/tests-Heap/badge.svg)](https://github.com/cristywei/containers-hw/actions?query=workflow%3Atests-Heap)
+1. [![](https://github.com/cristywei/containers-hw/workflows/heap/badge.svg)](https://github.com/cristywei/containers-hw/actions?query=workflow%3Aheap)
