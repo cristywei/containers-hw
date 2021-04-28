@@ -10,7 +10,7 @@ This homework is using an explicit tree implementation to help you get more prac
 from containers.BinaryTree import BinaryTree, Node
 
 
-class Heap():
+class Heap(BinaryTree):
     '''
     FIXME:
     Heap is currently not a subclass of BinaryTree.
@@ -24,6 +24,10 @@ class Heap():
         If xs is a list (i.e. xs is not None),
         then each element of xs needs to be inserted into the Heap.
         '''
+        super().__init__()
+        self.xs = xs
+        if xs is not None:
+            self.insert_list(xs)
 
     def __repr__(self):
         '''
@@ -59,6 +63,20 @@ class Heap():
         FIXME:
         Implement this method.
         '''
+        ret = True
+        if node is None:
+            return True
+        if node.left:
+            if node.value < node.left.value:
+                ret &= Heap._is_heap_satisfied(node.left)
+            else:
+                return False
+        if node.right:
+            if node.value < node.right.value:
+                ret &= Heap._is_heap_satisfied(node.right)
+            else:
+                return False
+        return ret
 
     def insert(self, value):
         '''
@@ -79,6 +97,38 @@ class Heap():
         Create a @staticmethod helper function,
         following the same pattern used in the BST and AVLTree insert functions.
         '''
+        if self.root is None:
+            self.root = Node(value)
+        else:
+            length = self.__len__()
+            binarycount = '{0:b}'.format(count)
+            Heap._insert(value, self.root, binarycount[1:])
+
+    @staticmethod
+    def _insert(value, node, binarycount):
+        if binarycount[0] == 0:
+            if node.left:
+                return Heap._insert(value, node.left, binarycount[1:])
+            else:
+                node.left = Node(value)
+        if binarycount[0] == 1:
+            if node.right:
+                return Heap._insert(value, node.right, binarycount[1:])
+            else:
+                node.right = Node(value)
+        if binarycount[0] == 0:
+            if node.left.value < node.value:
+                parent = node.value
+                node.value = node.left.value
+                node.left.value = parent
+                return node
+        if binarycount[0] == 1:
+            if node.right.value < node.value:
+                parent = node.value
+                node.value = node.right.value
+                node.right.value = parent
+                return node
+        return node
 
     def insert_list(self, xs):
         '''
@@ -87,6 +137,8 @@ class Heap():
         FIXME:
         Implement this function.
         '''
+        for x in xs:
+            self.insert(x)
 
     def find_smallest(self):
         '''
@@ -95,6 +147,7 @@ class Heap():
         FIXME:
         Implement this function.
         '''
+        return self.root.value
 
     def remove_min(self):
         '''
@@ -115,3 +168,14 @@ class Heap():
         It's possible to do it with only a single helper (or no helper at all),
         but I personally found dividing up the code into two made the most sense.
         '''
+        if self.root:
+            length = self.__len__()
+            binarylength = '{0:b}'.format(length)
+
+    @staticmethod
+    def _remove_bottom_right(node):
+        pass
+
+    @staticmethod
+    def _trickle():
+        pass
