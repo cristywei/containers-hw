@@ -67,7 +67,7 @@ class Heap(BinaryTree):
         if node.left is None:
             if node.right is None:
                 return True
-        elif node.right is None:
+        elif not node.right:
             if node.left:
                 return node.value <= node.left.value
         elif node.value <= node.left.value:
@@ -95,27 +95,25 @@ class Heap(BinaryTree):
         Create a @staticmethod helper function,
         following the same pattern used in the BST and AVLTree insert functions.
         '''
-        if self.root is None:
-            self.root = Node(value)
-        else:
+        if self.root:
             length = self.__len__()
             binarycount = '{0:b}'.format(length + 1)[1:]
             self.root = Heap._insert(self.root, value, binarycount)
+        else:
+            self.root = Node(value)
 
     @staticmethod
     def _insert(node, value, binarycount):
         if binarycount[0] == '0':
-            if node.left:
-                return Heap._insert(node.left, value, binarycount[1:])
-            else:
+            if not node.left:
                 node.left = Node(value)
-
-        if binarycount[0] == '1':
-            if node.right:
-                return Heap._insert(node.right, value, binarycount[1:])
             else:
+                node.left = Heap._insert(node.left, value, binarycount[1:])
+        if binarycount[0] == '1':
+            if not node.right:
                 node.right = Node(value)
-
+            else:
+                node.right = Heap._insert(node.right, value, binarycount[1:])
         if binarycount[0] == '0':
             if node.left.value < node.value:
                 switch = node.value
@@ -124,7 +122,6 @@ class Heap(BinaryTree):
                 return node
             else:
                 return node
-
         if binarycount[0] == '1':
             if node.right.value < node.value:
                 switch = node.value
@@ -172,7 +169,7 @@ class Heap(BinaryTree):
         It's possible to do it with only a single helper (or no helper at all),
         but I personally found dividing up the code into two made the most sense.
         '''
-        if self.root is None:
+        if not self.root:
             pass
         else:
             length = self.__len__()
