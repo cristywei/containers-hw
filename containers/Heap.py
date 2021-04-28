@@ -24,9 +24,8 @@ class Heap(BinaryTree):
         If xs is a list (i.e. xs is not None),
         then each element of xs needs to be inserted into the Heap.
         '''
-        super().__init__()
-        self.xs = xs
-        if xs is not None:
+        super().__init__() 
+        if xs:
             self.insert_list(xs)
 
     def __repr__(self):
@@ -63,20 +62,19 @@ class Heap(BinaryTree):
         FIXME:
         Implement this method.
         '''
-        ret = True
         if node is None:
             return True
-        if node.left:
-            if node.value < node.left.value:
-                ret &= Heap._is_heap_satisfied(node.left)
-            else:
-                return False
-        if node.right:
-            if node.value < node.right.value:
-                ret &= Heap._is_heap_satisfied(node.right)
-            else:
-                return False
-        return ret
+        if node.left is None:
+            if node.right is None:
+                return True
+        elif node.right is None:
+            if node.left:
+                return node.value <= node.left.value
+        elif node.value <= node.left.value:
+            if node.value <= node.right.value:
+                return Heap._is_heap_satisfied(node.right) and Heap._is_heap_satisfied(node.left)
+        else:
+            return False
 
     def insert(self, value):
         '''
@@ -101,34 +99,40 @@ class Heap(BinaryTree):
             self.root = Node(value)
         else:
             length = self.__len__()
-            binarycount = '{0:b}'.format(count)
-            Heap._insert(value, self.root, binarycount[1:])
+            binarycount = '{0:b}'.format(length + 1)[1:]
+            self.root = Heap._insert(self.root, value, binarycount)
 
     @staticmethod
-    def _insert(value, node, binarycount):
-        if binarycount[0] == 0:
+    def _insert(node, value, binarycount):
+        if binarycount[0] == '0':
             if node.left:
-                return Heap._insert(value, node.left, binarycount[1:])
+                return Heap._insert(node.left, value, binarycount[1:])
             else:
                 node.left = Node(value)
-        if binarycount[0] == 1:
+
+        if binarycount[0] == '1':
             if node.right:
-                return Heap._insert(value, node.right, binarycount[1:])
+                return Heap._insert(node.right, value, binarycount[1:])
             else:
                 node.right = Node(value)
-        if binarycount[0] == 0:
+
+        if binarycount[0] == '0':
             if node.left.value < node.value:
-                parent = node.value
+                switch = node.value
                 node.value = node.left.value
-                node.left.value = parent
+                node.left.value = switch
                 return node
-        if binarycount[0] == 1:
+            else:
+                return node
+
+        if binarycount[0] == '1':
             if node.right.value < node.value:
-                parent = node.value
+                switch = node.value
                 node.value = node.right.value
-                node.right.value = parent
+                node.right.value = switch
                 return node
-        return node
+            else:
+                return node
 
     def insert_list(self, xs):
         '''
@@ -168,14 +172,64 @@ class Heap(BinaryTree):
         It's possible to do it with only a single helper (or no helper at all),
         but I personally found dividing up the code into two made the most sense.
         '''
-        if self.root:
+        if self.root is None:
+            pass
+        else:
             length = self.__len__()
-            binarylength = '{0:b}'.format(length)
+            binarylength = '{0:b}'.format(length)[1:]
+            rem, self.root = Heap._remove_bottom_right(self.root, binarylength)
+            if self.root:
+                self.root.value = rem
+            print(str(self.root))
+            self.root = Heap._trickle(self.root)
 
     @staticmethod
-    def _remove_bottom_right(node):
-        pass
+    def _remove_bottom_right(node, binarylength):
+        delt = ""
+        if len(binarylength) == 0:
+            return None, None
+
+        if binarylength[0] == '0':
+            if len(binarylength) == 1:
+                delt = node.left.value
+                node.left = None
+            else:
+                delt, node.left = Heap._remove_bottom_right(node.left, binarylength[1:])
+
+        if binarylength[0] == '1':
+            if len(binarylength) == 1:
+                delt = node.right.value
+                node.right = None
+            else:
+                delt, node.right = Heap._remove_bottom_right(node.right, binarylength[1:])
+        print(delt, str(node))
+        return delt, node
 
     @staticmethod
-    def _trickle():
-        pass
+    def _trickle(node):
+        if Heap._is_heap_satisfied(node):
+            pass
+        else:
+            if node.left is None and node.right is not None:
+                switch = node.value
+                node.value = node.right.value
+                node.right.value = switch
+                node.right = Heap._trickle(node.right)
+            elif node.right is None and node.left is not None:
+                switch = node.value
+                node.value = node.left.value
+                node.left.value = switch
+                node.left = Heap._trickle(node.left)
+            elif node.left.value <= node.right.value:
+                switch = node.value
+                node.value = node.left.value
+                node.left.value = switch
+                node.left = Heap._trickle(node.left)
+            elif node.left.value >= node.right.value:
+                switch = node.value
+                node.value = node.right.value
+                node.right.value = switch
+                node.right = Heap._trickle(node.right)
+            else:
+                pass
+        return node
